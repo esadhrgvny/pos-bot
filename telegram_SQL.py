@@ -10,7 +10,6 @@ mydb = mysql.connector.connect(
 
 api = '1654237983:AAF8eSpAQh6v5cv-lAAJjvdn2uRjjTYtzRU'
 bot = telebot.TeleBot(api)
-
 # cek database sudah bisa diakses apa belum
 # print(mydb)
 # memberi input ke SQL
@@ -23,7 +22,6 @@ def penjualan(message):
     texts = message.text.split(' ')
     # parameter tanggal
     date = texts[1]
-
     # ambil data transaksi dari table sale berdasarkan tanggal
     try:
         sql.execute(
@@ -79,6 +77,44 @@ def penjualan(message):
     sql.execute(insert, val)
     mydb.commit()
     bot.reply_to(message, 'Data berhasil diinput')
+    print(sql.rowcount, "Record added")
+
+
+@bot.message_handler(commands=['edit'])
+def penjualan(message):
+    # print(message)
+    texts = message.text.split(' ')
+    invoice = texts[1]
+    customer_id = texts[2]
+    Total_Price = texts[3]
+    Discount = texts[4]
+    Final_price = texts[5]
+    Cash = texts[6]
+    Remaining = texts[7]
+    Date = texts[8]
+
+    update = "UPDATE t_sale SET invoice = %s, customer_id = %s, total_price = %s, discount = %s, final_price = %s, cash = %s, remaining = %s, date = %s WHERE invoice = '{}'".format(
+        invoice)
+    val = (invoice, customer_id, Total_Price, Discount,
+           Final_price, Cash, Remaining, Date)
+    sql.execute(update, val)
+    mydb.commit()
+    bot.reply_to(message, 'Data berhasil diupdate')
+    print(sql.rowcount, "Record(s) Updated")
+
+
+@bot.message_handler(commands=['hapus'])
+def penjualan(message):
+    # print(message)
+    texts = message.text.split(' ')
+    invoice = texts[1]
+
+    delete = "DELETE FROM t_sale WHERE invoice = '{}'".format(invoice)
+    val = (invoice)
+    sql.execute(delete, val)
+    mydb.commit()
+    bot.reply_to(message, 'Data berhasil dihapus')
+    print(sql.rowcount, "Record(s) Deleted")
 
 
 print('bot start running')
