@@ -23,7 +23,6 @@ def penjualan(message):
     texts = message.text.split(' ')
     # parameter tanggal
     date = texts[1]
-    print(texts)
 
     # ambil data transaksi dari table sale berdasarkan tanggal
     try:
@@ -31,16 +30,55 @@ def penjualan(message):
             "SELECT invoice, customer_id, total_price, discount, final_price, cash, remaining, date from t_sale where date ='{}'".format(date))
 
         hasil_sql = sql.fetchall()
-        pesan_balasan = ''
+        pesan = []
 
         for x in hasil_sql:
-            print(x)
-            pesan_balasan = pesan_balasan + str(x) + '\n'
+            a = """Invoice : {0}\n
+                id Customer : {1}\n
+                Total Price : {2}\n
+                Discount : {3}\n
+                Final Price: {4}\n
+                Cash: {5}\n
+                Remaining: {6}\n
+                Date: {7}\n""".format(
+                x[0],
+                x[1],
+                x[2],
+                x[3],
+                x[4],
+                x[5],
+                x[6],
+                x[7])
+            pesan.append(a)
 
-            bot.reply_to(message, pesan_balasan)
+        spasi = " \n"
+        pesan_balasan = spasi.join(pesan)
+        bot.reply_to(message, pesan_balasan)
+
     except:
-        pesan_error = 'Tidak ada transaksi'
-        bot.reply_to(message, pesan_error)
+        pesan_balasan = 'Transaksi Tidak ada'
+        bot.reply_to(message, pesan_balasan)
+
+
+@bot.message_handler(commands=['input'])
+def penjualan(message):
+    # print(message)
+    texts = message.text.split(' ')
+    invoice = texts[1]
+    customer_id = texts[2]
+    Total_Price = texts[3]
+    Discount = texts[4]
+    Final_price = texts[5]
+    Cash = texts[6]
+    Remaining = texts[7]
+    Date = texts[8]
+
+    insert = 'insert into t_sale (invoice, customer_id, total_price, discount, final_price, cash, remaining, date) values ( %s, %s, %s, %s, %s, %s, %s, %s)'
+    val = (invoice, customer_id, Total_Price, Discount,
+           Final_price, Cash, Remaining, Date)
+    sql.execute(insert, val)
+    mydb.commit()
+    bot.reply_to(message, 'Data berhasil diinput')
 
 
 print('bot start running')
