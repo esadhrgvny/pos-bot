@@ -97,9 +97,9 @@ Contoh: /edit EP2102170002 4 20000 5000 15000 50000 35000 2021-01-18
 def action_message(message):
     print(message)
     bot.reply_to(message, '''
-    ketik /hapus [invoice yang akan dihapus] [id_customer] [total_harga] [discount] [harga_final] [cash] [kembalian] [tanggal]
+    ketik /hapus [invoice yang akan dihapus]
     
-Contoh: /hapus EP2102170002 4 20000 5000 15000 50000 35000 2021-01-18
+Contoh: /hapus EP2102170002
     ''')
 
 
